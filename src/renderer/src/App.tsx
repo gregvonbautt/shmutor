@@ -1,34 +1,69 @@
-import Versions from './components/Versions'
-import electronLogo from './assets/electron.svg'
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionItem,
+  AccordionPanel,
+  Button,
+  FluentProvider,
+  TeachingPopover,
+  TeachingPopoverBody,
+  TeachingPopoverFooter,
+  TeachingPopoverHeader,
+  TeachingPopoverSurface,
+  TeachingPopoverTitle,
+  TeachingPopoverTrigger,
+  webLightTheme
+} from '@fluentui/react-components'
+import './assets/main.css'
 
 function App(): JSX.Element {
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
+  const ipcHandle = (): void => {
+    window.electron.ipcRenderer.invoke('dialog:openFile').then(result => {
+      console.log(result)
+      alert(result)
+    })
+  }
 
   return (
-    <>
-      <img alt="logo" className="logo" src={electronLogo} />
-      <div className="creator">Powered by electron-vite</div>
-      <div className="text">
-        Build an Electron app with <span className="react">React</span>
-        &nbsp;and <span className="ts">TypeScript</span>
+    <FluentProvider theme={webLightTheme}>
+      <div className="spacingVerticalS">
+        <Button onClick={ipcHandle}>Browse...</Button>
+        <Accordion>
+          <AccordionItem value="1">
+            <AccordionHeader>Accordion Header 1</AccordionHeader>
+            <AccordionPanel>
+              <div>Accordion Panel 1</div>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem value="2">
+            <AccordionHeader>Accordion Header 2</AccordionHeader>
+            <AccordionPanel>
+              <div>Accordion Panel 2</div>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem value="3">
+            <AccordionHeader>Accordion Header 3</AccordionHeader>
+            <AccordionPanel>
+              <div>Accordion Panel 3</div>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+
+        <TeachingPopover>
+          <TeachingPopoverTrigger>
+            <Button onClick={ipcHandle}>TeachingPopover trigger</Button>
+          </TeachingPopoverTrigger>
+          <TeachingPopoverSurface>
+            <TeachingPopoverHeader>Tips</TeachingPopoverHeader>
+            <TeachingPopoverBody>
+              <TeachingPopoverTitle>Teaching Bubble Title</TeachingPopoverTitle>
+              <div>This is a teaching popover body</div>
+            </TeachingPopoverBody>
+            <TeachingPopoverFooter primary="Learn more" secondary="Got it" />
+          </TeachingPopoverSurface>
+        </TeachingPopover>
       </div>
-      <p className="tip">
-        Please try pressing <code>F12</code> to open the devTool
-      </p>
-      <div className="actions">
-        <div className="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">
-            Documentation
-          </a>
-        </div>
-        <div className="action">
-          <a target="_blank" rel="noreferrer" onClick={ipcHandle}>
-            Send IPC
-          </a>
-        </div>
-      </div>
-      <Versions></Versions>
-    </>
+    </FluentProvider>
   )
 }
 

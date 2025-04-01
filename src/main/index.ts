@@ -1,7 +1,15 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+
+async function handleFileOpen(): Promise<string | undefined> {
+  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })
+  if (!canceled) {
+    console.log(filePaths)
+    return filePaths[0]
+  }
+}
 
 function createWindow(): void {
   // Create the browser window.
@@ -49,8 +57,8 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
+  // IPC config
+  ipcMain.handle('dialog:openFile', handleFileOpen)
 
   createWindow()
 
