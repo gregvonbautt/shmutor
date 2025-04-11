@@ -1,67 +1,32 @@
-import {
-  Accordion,
-  AccordionHeader,
-  AccordionItem,
-  AccordionPanel,
-  Button,
-  FluentProvider,
-  TeachingPopover,
-  TeachingPopoverBody,
-  TeachingPopoverFooter,
-  TeachingPopoverHeader,
-  TeachingPopoverSurface,
-  TeachingPopoverTitle,
-  TeachingPopoverTrigger,
-  webLightTheme
-} from '@fluentui/react-components'
+import { Button, FluentProvider, webLightTheme } from '@fluentui/react-components'
 import './assets/main.css'
+import ChallengeGroup, { ChallengeItem } from './components/ChallengeGroup'
+import Spacing from './components/Spacing'
+import { useState } from 'react'
 
 function App(): JSX.Element {
+  const [res, setRes] = useState()
+
   const ipcHandle = (): void => {
-    window.electron.ipcRenderer.invoke('dialog:openFile').then(result => {
+    window.electron.ipcRenderer.invoke('dialog:openFile').then((result) => {
       console.log(result)
-      alert(result)
+      setRes(result)
     })
+  }
+
+  const items: ChallengeItem[] = []
+  for (let i = 0; i < 20; i++) {
+    items.push({ question: `question ${i}`, answer: `answer ${i}` })
   }
 
   return (
     <FluentProvider theme={webLightTheme}>
-      <div className="spacingVerticalS">
-        <Button onClick={ipcHandle}>Browse...</Button>
-        <Accordion>
-          <AccordionItem value="1">
-            <AccordionHeader>Accordion Header 1</AccordionHeader>
-            <AccordionPanel>
-              <div>Accordion Panel 1</div>
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem value="2">
-            <AccordionHeader>Accordion Header 2</AccordionHeader>
-            <AccordionPanel>
-              <div>Accordion Panel 2</div>
-            </AccordionPanel>
-          </AccordionItem>
-          <AccordionItem value="3">
-            <AccordionHeader>Accordion Header 3</AccordionHeader>
-            <AccordionPanel>
-              <div>Accordion Panel 3</div>
-            </AccordionPanel>
-          </AccordionItem>
-        </Accordion>
-
-        <TeachingPopover>
-          <TeachingPopoverTrigger>
-            <Button onClick={ipcHandle}>TeachingPopover trigger</Button>
-          </TeachingPopoverTrigger>
-          <TeachingPopoverSurface>
-            <TeachingPopoverHeader>Tips</TeachingPopoverHeader>
-            <TeachingPopoverBody>
-              <TeachingPopoverTitle>Teaching Bubble Title</TeachingPopoverTitle>
-              <div>This is a teaching popover body</div>
-            </TeachingPopoverBody>
-            <TeachingPopoverFooter primary="Learn more" secondary="Got it" />
-          </TeachingPopoverSurface>
-        </TeachingPopover>
+      <div style={{ margin: '2em' }}>
+        <Spacing direction="V" size="M">
+          <Button onClick={ipcHandle}>Browse...</Button>
+          {res}
+          <ChallengeGroup items={items} />
+        </Spacing>
       </div>
     </FluentProvider>
   )

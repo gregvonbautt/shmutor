@@ -5,10 +5,10 @@ import icon from '../../resources/icon.png?asset'
 
 async function handleFileOpen(): Promise<string | undefined> {
   const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })
-  if (!canceled) {
-    console.log(filePaths)
+  if (!canceled && filePaths && filePaths.length > 0) {
     return filePaths[0]
   }
+  return undefined
 }
 
 function createWindow(): void {
@@ -41,6 +41,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+
+  mainWindow.removeMenu()
 }
 
 // This method will be called when Electron has finished
