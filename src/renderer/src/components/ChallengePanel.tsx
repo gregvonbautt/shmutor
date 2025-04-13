@@ -2,7 +2,7 @@ import { Button } from '@fluentui/react-components'
 import { LABELS } from '@renderer/common/Labels'
 import { Challenge, useShmutorStore } from '@renderer/common/Store'
 import { ReactNode, useEffect, useState } from 'react'
-import ChallengeGroup from './ChallengeGroup'
+import ChallengePage from './ChallengePage'
 import Spacing from './Spacing'
 
 const CHALLENGES_PER_PAGE = 8
@@ -47,7 +47,7 @@ function ChallengePanel(): ReactNode {
         </div>
       </Spacing>
 
-      <ChallengeGroup firstIdx={firstIdx} num={CHALLENGES_PER_PAGE} />
+      <ChallengePage firstIdx={firstIdx} num={CHALLENGES_PER_PAGE} />
     </Spacing>
   )
 }

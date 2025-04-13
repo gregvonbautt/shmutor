@@ -1,0 +1,118 @@
+import { Button, Input, Tag } from '@fluentui/react-components'
+import { CheckmarkCircleRegular } from '@fluentui/react-icons'
+import { Challenge, useShmutorStore } from '@renderer/common/Store'
+import { useEffect, useState } from 'react'
+import Spacing from './Spacing'
+import { LABELS } from '@renderer/common/Labels'
+
+function ChallengePage(props: { firstIdx: number; num: number }): JSX.Element {
+  const challenges = useShmutorStore((state) => state.challenges)
+  const userAnswers = useShmutorStore((state) => state.userAnswers)
+
+  const [pageInput, setPageInput] = useState(new Map<number, string>())
+
+  // clear input in case of user answers reset
+  useEffect(() => {
+    if (userAnswers.size == 0) setPageInput(new Map<number, string>())
+  }, [userAnswers])
+
+  const provideAnswer = useShmutorStore((state) => state.provideAnswer)
+  const updateInput = (idx: number, input?: string): void => {
+    setPageInput((pageInput) => {
+      const upd = new Map<number, string>(pageInput)
+      if (!input) { upd.delete(idx) } else { upd.set(idx, input) }
+      return upd
+    })
+  }
+
+  const submitAnswer = (idx: number): void => {
+    const answer = pageInput.get(idx)
+    if (answer) {
+      provideAnswer(props.firstIdx + idx, answer.toLowerCase())
+      updateInput(idx, undefined)
+    }
+  }
+
+  const items = challenges.slice(props.firstIdx, props.firstIdx + props.num).map((i, idx) => {
+    const globalIdx = props.firstIdx + idx
+    return (
+      <RenderChallenge
+        key={`challenge-${globalIdx}`}
+        challenge={i}
+        globalIdx={globalIdx}
+        input={pageInput.get(idx) || ''}
+        onInputChange={(input) => updateInput(idx, input)}
+        submitAnswer={() => submitAnswer(idx)}
+      />
+    )
+  })
+
+  return (
+    <Spacing direction="V" size="M">
+      {items}
+      <Button
+        disabled={pageInput.size == 0}
+        onClick={() => {
+          pageInput.forEach((_, idx) => submitAnswer(idx))
+        }}
+      >
+        {LABELS.check}
+      </Button>
+      <div>Page Input: {JSON.stringify(Object.fromEntries(pageInput))}</div>
+    </Spacing>
+  )
+}
+
+function RenderChallenge(props: {
+  challenge: Challenge
+  globalIdx: number
+  input: string
+  onInputChange: (input?: string) => void
+  submitAnswer: () => void
+}): JSX.Element {
+  const userAnswers = useShmutorStore((state) => state.userAnswers)
+  const userAnswer = userAnswers.get(props.globalIdx)
+
+  return (
+    <Spacing direction="H" size="M">
+      <div>
+        <Tag>{props.challenge.question}</Tag>
+      </div>
+      {!userAnswer ? (
+        <div>
+          <Input
+            value={props.input}
+            onChange={(_, d) => props.onInputChange(d.value)}
+            onKeyDown={(e) => {
+              if (e.key == 'Enter') props.submitAnswer()
+            }}
+          />
+        </div>
+      ) : (
+        <RenderAnswer challenge={props.challenge} answer={userAnswer} />
+      )}
+    </Spacing>
+  )
+}
+
+function RenderAnswer(props: { challenge: Challenge, answer: string }): JSX.Element {
+  if (props.answer.toLowerCase() == props.challenge.answer.toLowerCase()) {
+    return (
+      <Spacing direction="H" size="S">
+        <div style={{ color: 'green', fontWeight: 'bold' }}>{props.challenge.answer}</div>
+        <CheckmarkCircleRegular />
+      </Spacing>
+    )
+  } else {
+    return (
+      <>
+        <Spacing direction="H" size="M">
+          <div style={{ textDecoration: 'line-through', color: 'red' }}>{props.answer}</div>
+          <div style={{ fontWeight: 'bold' }}>{props.challenge.answer}</div>
+        </Spacing>
+      </>
+    )
+  }
+}
+
+export default ChallengePage
