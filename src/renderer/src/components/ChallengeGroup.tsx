@@ -1,66 +1,67 @@
-import { Button, Input, Tag } from '@fluentui/react-components'
-import { ArrowCircleRightRegular, CheckmarkCircleRegular } from '@fluentui/react-icons'
-import { useState } from 'react'
+import { Input, Tag } from '@fluentui/react-components'
+import { CheckmarkCircleRegular } from '@fluentui/react-icons'
+import { Challenge, useShmutorStore } from '@renderer/common/Store'
+import { useEffect, useState } from 'react'
 import Spacing from './Spacing'
 
-export interface ChallengeItem {
-  question: string
-  answer: string
-}
-
-function ChallengeGroup(props: { items: ChallengeItem[] }): JSX.Element {
-  const challenges = props.items.map((i, idx) => (
-    <RenderChallenge key={`challenge-${idx}`} challenge={i} />
-  ))
+function ChallengeGroup(props: { firstIdx: number; num: number }): JSX.Element {
+  const challenges = useShmutorStore((state) => state.challenges)
+  const items = challenges.slice(props.firstIdx, props.firstIdx + props.num).map((i, idx) => {
+    const index = props.firstIdx + idx
+    return <RenderChallenge key={`challenge-${index}`} challenge={i} idx={index} />
+  })
 
   return (
-    <div
-      style={{
-        display: 'table',
-        tableLayout: 'fixed',
-        width: '100%'
-      }}
-    >
-      {challenges}
-    </div>
+    <Spacing direction="V" size="M">
+      {items}
+    </Spacing>
   )
 }
 
-function RenderChallenge(props: { challenge: ChallengeItem }): JSX.Element {
-  const cellStyle = {
-    display: 'table-cell',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis'
+function RenderChallenge(props: { challenge: Challenge; idx: number }): JSX.Element {
+  const [input, setInput] = useState<string>('')
+  const userAnswers = useShmutorStore((state) => state.userAnswers)
+  const userAnswer = userAnswers.get(props.idx)
+
+  // clear input if index changes
+  useEffect(() => setInput(''), [props.idx])
+
+  // clear input if all answers are cleared
+  useEffect(() => {
+    if (userAnswers.size == 0) setInput('')
+  }, [userAnswers])
+
+  const provideAnswer = useShmutorStore((state) => state.provideAnswer)
+
+  const submitAnswer = (): void => {
+    if (input) {
+      provideAnswer(props.idx, input.toLowerCase())
+    }
   }
 
-  const [input, setInput] = useState<string>()
-  const [userAnswer, setUserAnswer] = useState<string>()
-
   return (
-    <div style={{ display: 'table-row' }}>
-      <div style={cellStyle}>
-        <div style={{ marginBottom: '1em' }}>
-          <Tag>{props.challenge.question}</Tag>
-        </div>
+    <Spacing direction="H" size="M">
+      <div>
+        <Tag>{props.challenge.question}</Tag>
       </div>
       {!userAnswer ? (
-        <>
-          <div style={cellStyle}>
-            <Input value={input} onChange={(_, d) => setInput(d.value)} />
-          </div>
-          <Button
-            disabled={!input}
-            icon={<ArrowCircleRightRegular onClick={() => setUserAnswer(input?.toLowerCase())} />}
+        <div>
+          <Input
+            value={input}
+            onChange={(_, d) => setInput(d.value)}
+            onKeyDown={(e) => {
+              if (e.key == 'Enter') submitAnswer()
+            }}
           />
-        </>
+        </div>
       ) : (
         <RenderAnswer challenge={props.challenge} answer={userAnswer} />
       )}
-    </div>
+    </Spacing>
   )
 }
 
-function RenderAnswer(props: { challenge: ChallengeItem, answer: string }): JSX.Element {
+function RenderAnswer(props: { challenge: Challenge, answer: string }): JSX.Element {
   if (props.answer.toLowerCase() == props.challenge.answer.toLowerCase()) {
     return (
       <Spacing direction="H" size="S">
