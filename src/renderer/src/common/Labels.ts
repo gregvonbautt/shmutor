@@ -9,5 +9,6 @@ export const LABELS = {
   check: 'Проверить',
   stats: 'Статистика',
   number_answered: 'Дано ответов',
-  correct_answers: 'Правильных ответов'
+  correct_answers: 'Правильных ответов',
+  swap: 'Поменять вопрос и ответ'
 }

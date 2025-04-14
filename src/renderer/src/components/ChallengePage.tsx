@@ -1,9 +1,10 @@
 import { Button, Input, Tag } from '@fluentui/react-components'
-import { CheckmarkCircleRegular } from '@fluentui/react-icons'
+import { CheckmarkCircleRegular, EyeRegular } from '@fluentui/react-icons'
 import { Challenge, useShmutorStore } from '@renderer/common/Store'
 import { ReactNode, useEffect, useState } from 'react'
 import Spacing from './Spacing'
 import { LABELS } from '@renderer/common/Labels'
+import { cmp } from '@renderer/common/Utils'
 
 function ChallengePage(props: {
   controls?: ReactNode
@@ -36,7 +37,7 @@ function ChallengePage(props: {
   const submitAnswer = (idx: number): void => {
     const answer = pageInput.get(idx)
     if (answer) {
-      provideAnswer(props.firstIdx + idx, answer.toLowerCase())
+      provideAnswer(props.firstIdx + idx, answer)
       updateInput(idx, undefined)
     }
   }
@@ -82,6 +83,7 @@ function RenderChallenge(props: {
 }): JSX.Element {
   const userAnswers = useShmutorStore((state) => state.userAnswers)
   const userAnswer = userAnswers.get(props.globalIdx)
+  const [peek, setPeek] = useState(false)
 
   return (
     <Spacing direction="H" size="M">
@@ -89,15 +91,23 @@ function RenderChallenge(props: {
         <Tag>{props.challenge.question}</Tag>
       </div>
       {!userAnswer ? (
-        <div>
-          <Input
-            value={props.input}
-            onChange={(_, d) => props.onInputChange(d.value)}
-            onKeyDown={(e) => {
-              if (e.key == 'Enter') props.submitAnswer()
-            }}
+        <Spacing direction="H" size="M">
+          <div>
+            <Input
+              value={props.input}
+              onChange={(_, d) => props.onInputChange(d.value)}
+              onKeyDown={(e) => {
+                if (e.key == 'Enter') props.submitAnswer()
+              }}
+            />
+          </div>
+          <Button
+            icon={<EyeRegular />}
+            onMouseDown={() => setPeek(true)}
+            onMouseLeave={() => setPeek(false)}
           />
-        </div>
+          {peek && <div style={{ color: 'lightgray' }}>{props.challenge.answer}</div>}
+        </Spacing>
       ) : (
         <RenderAnswer challenge={props.challenge} answer={userAnswer} />
       )}
@@ -106,7 +116,7 @@ function RenderChallenge(props: {
 }
 
 function RenderAnswer(props: { challenge: Challenge, answer: string }): JSX.Element {
-  if (props.answer.toLowerCase() == props.challenge.answer.toLowerCase()) {
+  if (cmp(props.answer, props.challenge.answer)) {
     return (
       <Spacing direction="H" size="S">
         <div style={{ color: 'green', fontWeight: 'bold' }}>{props.challenge.answer}</div>

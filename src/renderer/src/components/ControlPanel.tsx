@@ -1,7 +1,7 @@
-import { Button } from '@fluentui/react-components'
+import { Button, Checkbox } from '@fluentui/react-components'
 import { LABELS } from '@renderer/common/Labels'
 import { useShmutorStore } from '@renderer/common/Store'
-import { shuffled } from '@renderer/common/Utils'
+import { cmp, shuffled } from '@renderer/common/Utils'
 import { ReactNode, useState } from 'react'
 import Spacing from './Spacing'
 
@@ -10,6 +10,7 @@ function ControlPanel(): ReactNode {
   const setChallengeBank = useShmutorStore((state) => state.setChallengeBank)
   const setChallenges = useShmutorStore((state) => state.setChallenges)
   const [fileName, setFileName] = useState('')
+  const [swap, setSwap] = useState(false)
 
   const ipcHandle = (): void => {
     window.electron.ipcRenderer.invoke('dialog:openFile').then((result) => {
@@ -28,7 +29,15 @@ function ControlPanel(): ReactNode {
   const clearAnswers = useShmutorStore((state) => state.clearAnswers)
 
   const startChallenge = (): void => {
-    setChallenges(shuffled(challengeBank))
+    const challenges = shuffled(challengeBank)
+    if (swap) {
+      challenges.forEach((c) => {
+        const x = c.answer
+        c.answer = c.question
+        c.question = x
+      })
+    }
+    setChallenges(challenges)
     clearAnswers()
   }
 
@@ -51,6 +60,13 @@ function ControlPanel(): ReactNode {
             </>
           )}
           <p>
+            <Checkbox
+              label={LABELS.swap}
+              checked={swap}
+              onChange={(_, e) => setSwap(e.checked == true)}
+            />
+          </p>
+          <p>
             <Button disabled={challengeBank.length == 0} onClick={startChallenge}>
               {userAnswers.size == 0 ? LABELS.start : LABELS.start_over}
             </Button>
@@ -70,7 +86,7 @@ function Stats(): ReactNode {
   const userAnswers = useShmutorStore((state) => state.userAnswers)
   const challenges = useShmutorStore((state) => state.challenges)
   const numCorrect = userAnswers.entries().reduce((cnt, e) => {
-    return cnt + (challenges[e[0]].answer == e[1] ? 1 : 0)
+    return cnt + (cmp(challenges[e[0]].answer, e[1]) ? 1 : 0)
   }, 0)
   return (
     <Spacing direction="V" size="S">
