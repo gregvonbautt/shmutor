@@ -1,11 +1,15 @@
 import { Button, Input, Tag } from '@fluentui/react-components'
 import { CheckmarkCircleRegular } from '@fluentui/react-icons'
 import { Challenge, useShmutorStore } from '@renderer/common/Store'
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import Spacing from './Spacing'
 import { LABELS } from '@renderer/common/Labels'
 
-function ChallengePage(props: { firstIdx: number; num: number }): JSX.Element {
+function ChallengePage(props: {
+  controls?: ReactNode
+  firstIdx: number
+  num: number
+}): JSX.Element {
   const challenges = useShmutorStore((state) => state.challenges)
   const userAnswers = useShmutorStore((state) => state.userAnswers)
 
@@ -20,7 +24,11 @@ function ChallengePage(props: { firstIdx: number; num: number }): JSX.Element {
   const updateInput = (idx: number, input?: string): void => {
     setPageInput((pageInput) => {
       const upd = new Map<number, string>(pageInput)
-      if (!input) { upd.delete(idx) } else { upd.set(idx, input) }
+      if (!input) {
+        upd.delete(idx)
+      } else {
+        upd.set(idx, input)
+      }
       return upd
     })
   }
@@ -49,16 +57,18 @@ function ChallengePage(props: { firstIdx: number; num: number }): JSX.Element {
 
   return (
     <Spacing direction="V" size="M">
+      <Spacing direction="H" size="M">
+        <Button
+          disabled={pageInput.size == 0}
+          onClick={() => {
+            pageInput.forEach((_, idx) => submitAnswer(idx))
+          }}
+        >
+          {LABELS.check}
+        </Button>
+        {props.controls}
+      </Spacing>
       {items}
-      <Button
-        disabled={pageInput.size == 0}
-        onClick={() => {
-          pageInput.forEach((_, idx) => submitAnswer(idx))
-        }}
-      >
-        {LABELS.check}
-      </Button>
-      <div>Page Input: {JSON.stringify(Object.fromEntries(pageInput))}</div>
     </Spacing>
   )
 }
@@ -106,7 +116,7 @@ function RenderAnswer(props: { challenge: Challenge, answer: string }): JSX.Elem
   } else {
     return (
       <>
-        <Spacing direction="H" size="M">
+        <Spacing direction="H" size="S">
           <div style={{ textDecoration: 'line-through', color: 'red' }}>{props.answer}</div>
           <div style={{ fontWeight: 'bold' }}>{props.challenge.answer}</div>
         </Spacing>

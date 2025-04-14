@@ -2,11 +2,30 @@ import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import xlsx from 'node-xlsx'
 
-async function handleFileOpen(): Promise<string | undefined> {
-  const { canceled, filePaths } = await dialog.showOpenDialog({ properties: ['openFile'] })
+interface FileContents {
+  path: string
+  contents: string[][]
+}
+
+async function handleFileOpen(): Promise<FileContents | undefined> {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openFile'],
+    filters: [
+      {
+        extensions: ['xlsx'],
+        name: '*'
+      }
+    ]
+  })
   if (!canceled && filePaths && filePaths.length > 0) {
-    return filePaths[0]
+    const path = filePaths[0]
+    const rows = xlsx.parse(path)[0].data.map((r) => r.slice(0, 2))
+    return {
+      path,
+      contents: rows
+    }
   }
   return undefined
 }
@@ -18,10 +37,11 @@ function createWindow(): void {
     height: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon: icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      minimumFontSize: 24
     }
   })
 
@@ -79,6 +99,3 @@ app.on('window-all-closed', () => {
     app.quit()
   }
 })
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
