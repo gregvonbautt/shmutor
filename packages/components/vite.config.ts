@@ -10,19 +10,10 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
-      name: "components",
-      // formats: ["es"],
-      // fileName: (format) => `index.${format}.js`,
-      // fileName: "index.js"
+      formats: ['es']
     },
     rollupOptions: {
-      external: ["react", "react-dom"],
-      output: {
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
+      external: ["react", "react-dom", "react/jsx-runtime"],
     },
   },
 } satisfies UserConfig);
