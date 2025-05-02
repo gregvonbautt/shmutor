@@ -7,37 +7,14 @@ import Spacing from './Spacing'
 
 function ControlPanel(): ReactNode {
   const challengeBank = useShmutorStore((state) => state.challengeBank)
-  const setChallengeBank = useShmutorStore((state) => state.setChallengeBank)
   const setChallenges = useShmutorStore((state) => state.setChallenges)
-  const [fileName, setFileName] = useState('')
   const [swap, setSwap] = useState(false)
-
-  const ipcHandle = (): void => {
-    setFileName('haha!')
-    setChallengeBank(
-      [{
-        question: 'q1',
-        answer: 'a1'
-      }]
-    )
-
-    // window.electron.ipcRenderer.invoke('dialog:openFile').then((result) => {
-    //   setFileName(result?.path)
-    //   const rows: string[][] = result?.contents || []
-    //   setChallengeBank(
-    //     rows.map((r) => ({
-    //       question: r[0],
-    //       answer: r[1]
-    //     }))
-    //   )
-    // })
-  }
 
   const userAnswers = useShmutorStore((state) => state.userAnswers)
   const clearAnswers = useShmutorStore((state) => state.clearAnswers)
 
   const startChallenge = (): void => {
-    const challenges = shuffled(challengeBank)
+    const challenges = shuffled(challengeBank.challenges)
     if (swap) {
       challenges.forEach((c) => {
         const x = c.answer
@@ -55,19 +32,6 @@ function ControlPanel(): ReactNode {
       <div style={{ display: 'inline-block', width: '50%', verticalAlign: 'top' }}>
         <Spacing direction="V" size="M">
           <p>
-            <Button onClick={ipcHandle}>{LABELS.load_from_file}</Button>
-          </p>
-          {fileName && (
-            <>
-              <p>
-                {LABELS.file}: {fileName.split('/').at(-1)}
-              </p>
-              <p>
-                {LABELS.num_questions}: {challengeBank.length}
-              </p>
-            </>
-          )}
-          <p>
             <Checkbox
               label={LABELS.swap}
               checked={swap}
@@ -75,7 +39,7 @@ function ControlPanel(): ReactNode {
             />
           </p>
           <p>
-            <Button disabled={challengeBank.length == 0} onClick={startChallenge}>
+            <Button disabled={challengeBank.challenges.length == 0} onClick={startChallenge}>
               {userAnswers.size == 0 ? LABELS.start : LABELS.start_over}
             </Button>
           </p>

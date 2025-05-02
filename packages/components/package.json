@@ -3,13 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "module": "dist/components.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/components.js"
+    },
+    "./components.css": "./dist/components.css"
+  },
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
-    "watch": "watch 'npm run build' ./src",
-    "preview": "vite preview"
+    "watch": "watch 'npm run build' ./src"
   },
   "dependencies": {
     "@fluentui/react-components": "^9.61.2",

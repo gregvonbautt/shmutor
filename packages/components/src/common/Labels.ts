@@ -3,8 +3,6 @@ export const LABELS = {
   previous: 'Назад',
   start: 'Начать',
   start_over: 'Начать заново',
-  load_from_file: 'Загрузить...',
-  file: 'Файл',
   num_questions: 'Вопросов',
   check: 'Проверить',
   stats: 'Статистика',
