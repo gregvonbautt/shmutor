@@ -1,14 +1,14 @@
 {
-  "name": "@shmutor/components",
+  "name": "@shmutor/core",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/components.js"
+      "import": "./dist/core.js"
     },
-    "./components.css": "./dist/components.css"
+    "./core.css": "./dist/core.css"
   },
   "scripts": {
     "build": "tsc && vite build",

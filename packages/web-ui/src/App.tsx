@@ -1,6 +1,6 @@
-import { Challenge, ShmutorApp } from '@shmutor/components'
+import { Challenge, ShmutorApp } from '@shmutor/core'
 import './App.css'
-import '@shmutor/components/components.css'
+import '@shmutor/core/core.css'
 
 function App() {
   const challenges: Challenge[] = [
