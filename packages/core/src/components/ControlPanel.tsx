@@ -31,18 +31,18 @@ function ControlPanel(): ReactNode {
       {/* Controls */}
       <div style={{ display: 'inline-block', width: '50%', verticalAlign: 'top' }}>
         <Spacing direction="V" size="M">
-          <p>
+          <div>
             <Checkbox
               label={LABELS.swap}
               checked={swap}
               onChange={(_, e) => setSwap(e.checked == true)}
             />
-          </p>
-          <p>
+          </div>
+          <div>
             <Button disabled={challengeBank.length == 0} onClick={startChallenge}>
               {userAnswers.size == 0 ? LABELS.start : LABELS.start_over}
             </Button>
-          </p>
+          </div>
         </Spacing>
       </div>
 

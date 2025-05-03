@@ -3,5 +3,10 @@
   "version": "1.0.0",
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "build:core": "npm run build --workspace=packages/core",
+    "build:web-ui": "npm run build --workspace=packages/web-ui",
+    "build": "npm run build:core && npm run build:web-ui"
+  }
 }

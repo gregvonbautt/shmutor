@@ -5,7 +5,8 @@ import { defineConfig, UserConfig } from "vite";
 
 export default defineConfig({
   base: "./",
-  plugins: [dts({ rollupTypes: true }), react()],
+  plugins: [dts({ rollupTypes: true }),
+    react()],
   build: {
     sourcemap: true,
     lib: {

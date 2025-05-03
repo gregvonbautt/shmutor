@@ -1,16 +1,15 @@
-import { FluentProvider, webLightTheme } from '@fluentui/react-components'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
+import readXlsxFile from 'read-excel-file'
 import { Challenge, useShmutorStore } from './common/Store'
 import ChallengePanel from './components/ChallengePanel'
 import ControlPanel from './components/ControlPanel'
 import { Spacing } from './components/Spacing'
-import readXlsxFile from 'read-excel-file'
 import './styles.css'
 
 export function ShmutorApp(props: {
   challengeBank?: Challenge[]
   xlsChallengeDef?: File | Blob
-}): JSX.Element {
+}): React.ReactElement {
   const setChallengeBank = useShmutorStore((state) => state.setChallengeBank)
 
   useEffect(() => {
@@ -28,14 +27,8 @@ export function ShmutorApp(props: {
     })
   }, [props.xlsChallengeDef])
 
-  return (
-    <FluentProvider theme={webLightTheme}>
-      <div style={{ margin: '2em' }}>
-        <Spacing direction="V" size="M">
-          <ControlPanel />
-          <ChallengePanel />
-        </Spacing>
-      </div>
-    </FluentProvider>
-  )
+  return <Spacing direction="V" size="M">
+    <ControlPanel />
+    <ChallengePanel />
+  </Spacing>
 }

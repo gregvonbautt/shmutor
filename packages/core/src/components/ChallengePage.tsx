@@ -1,16 +1,16 @@
 import { Button, Input, Tag } from '@fluentui/react-components'
 import { CheckmarkCircleRegular, EyeRegular } from '@fluentui/react-icons'
-import { Challenge, useShmutorStore } from '../common/Store'
-import { ReactNode, useEffect, useState } from 'react'
-import { Spacing } from './Spacing'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { LABELS } from '../common/Labels'
+import { Challenge, useShmutorStore } from '../common/Store'
 import { cmp } from '../common/Utils'
+import { Spacing } from './Spacing'
 
 function ChallengePage(props: {
   controls?: ReactNode
   firstIdx: number
   num: number
-}): JSX.Element {
+}): React.ReactElement {
   const challenges = useShmutorStore((state) => state.challenges)
   const userAnswers = useShmutorStore((state) => state.userAnswers)
 
@@ -80,7 +80,7 @@ function RenderChallenge(props: {
   input: string
   onInputChange: (input?: string) => void
   submitAnswer: () => void
-}): JSX.Element {
+}): React.ReactElement {
   const userAnswers = useShmutorStore((state) => state.userAnswers)
   const userAnswer = userAnswers.get(props.globalIdx)
   const [peek, setPeek] = useState(false)

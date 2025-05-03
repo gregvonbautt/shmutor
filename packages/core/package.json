@@ -15,10 +15,16 @@
     "watch": "watch 'npm run build' ./src"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.61.2",
-    "@fluentui/react-icons": "^2.0.294",
     "zustand": "^5.0.3",
     "read-excel-file": "^5.8.7"
+  },
+  "peerDependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "@fluentui/react-components": "^9.63.0",
+    "@fluentui/react-icons":"^2.0.298"
   },
   "devDependencies": {
     "typescript": "^5.8.2",
