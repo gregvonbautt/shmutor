@@ -2,7 +2,7 @@ import { Button, Input, Tag } from '@fluentui/react-components'
 import { CheckmarkCircleRegular, EyeRegular } from '@fluentui/react-icons'
 import { Challenge, useShmutorStore } from '../common/Store'
 import { ReactNode, useEffect, useState } from 'react'
-import Spacing from './Spacing'
+import { Spacing } from './Spacing'
 import { LABELS } from '../common/Labels'
 import { cmp } from '../common/Utils'
 

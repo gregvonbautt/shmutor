@@ -3,7 +3,7 @@ import { LABELS } from '../common/Labels'
 import { useShmutorStore } from '../common/Store'
 import { cmp, shuffled } from '../common/Utils'
 import { ReactNode, useState } from 'react'
-import Spacing from './Spacing'
+import { Spacing } from './Spacing'
 
 function ControlPanel(): ReactNode {
   const challengeBank = useShmutorStore((state) => state.challengeBank)
@@ -14,7 +14,7 @@ function ControlPanel(): ReactNode {
   const clearAnswers = useShmutorStore((state) => state.clearAnswers)
 
   const startChallenge = (): void => {
-    const challenges = shuffled(challengeBank.challenges)
+    const challenges = shuffled(challengeBank)
     if (swap) {
       challenges.forEach((c) => {
         const x = c.answer
@@ -39,7 +39,7 @@ function ControlPanel(): ReactNode {
             />
           </p>
           <p>
-            <Button disabled={challengeBank.challenges.length == 0} onClick={startChallenge}>
+            <Button disabled={challengeBank.length == 0} onClick={startChallenge}>
               {userAnswers.size == 0 ? LABELS.start : LABELS.start_over}
             </Button>
           </p>

@@ -1,4 +1,4 @@
-function Spacing(props: {
+export function Spacing(props: {
   direction: 'V' | 'H'
   size?: 'S' | 'M' | 'L'
   children: React.ReactNode
@@ -6,5 +6,3 @@ function Spacing(props: {
   const className = `spacing${props.direction} spacing${props.direction}${props.size}`
   return <div className={className}>{props.children}</div>
 }
-
-export default Spacing

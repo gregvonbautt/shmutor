@@ -5,29 +5,21 @@ export interface Challenge {
   answer: string
 }
 
-export interface ChallengeBank {
-  name: string
-  challenges: Challenge[]
-}
-
 type State = {
-  challengeBank: ChallengeBank
+  challengeBank: Challenge[]
   challenges: Challenge[]
   userAnswers: Map<number, string>
 }
 
 type Action = {
-  setChallengeBank: (cb: ChallengeBank) => void
+  setChallengeBank: (cb: Challenge[]) => void
   setChallenges: (challenges: Challenge[]) => void
   provideAnswer: (idx: number, answer: string) => void
   clearAnswers: () => void
 }
 
 export const useShmutorStore = create<State & Action>((set) => ({
-  challengeBank: {
-    name: '',
-    challenges: []
-  },
+  challengeBank: [],
   challenges: [],
   userAnswers: new Map<number, string>(),
   setChallengeBank: (cb): void => set(() => ({ challengeBank: cb })),
