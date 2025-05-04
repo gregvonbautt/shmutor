@@ -1,7 +1,7 @@
 import { Button, Input, Tag } from '@fluentui/react-components'
 import { CheckmarkCircleRegular, EyeRegular } from '@fluentui/react-icons'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { LABELS } from '../common/Labels'
+import { CoreLabelNames, useLabels } from '../common/Labels'
 import { Challenge, useShmutorStore } from '../common/Store'
 import { cmp } from '../common/Utils'
 import { Spacing } from './Spacing'
@@ -56,6 +56,8 @@ function ChallengePage(props: {
     )
   })
 
+  const [labels] = useLabels()
+
   return (
     <Spacing direction="V" size="M">
       <Spacing direction="H" size="M">
@@ -65,7 +67,7 @@ function ChallengePage(props: {
             pageInput.forEach((_, idx) => submitAnswer(idx))
           }}
         >
-          {LABELS.check}
+          {labels(CoreLabelNames.check)}
         </Button>
         {props.controls}
       </Spacing>

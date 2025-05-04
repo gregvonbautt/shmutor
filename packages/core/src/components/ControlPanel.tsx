@@ -1,8 +1,8 @@
 import { Button, Checkbox } from '@fluentui/react-components'
-import { LABELS } from '../common/Labels'
+import { ReactNode, useState } from 'react'
+import { CoreLabelNames, useLabels } from '../common/Labels'
 import { useShmutorStore } from '../common/Store'
 import { cmp, shuffled } from '../common/Utils'
-import { ReactNode, useState } from 'react'
 import { Spacing } from './Spacing'
 
 function ControlPanel(): ReactNode {
@@ -26,6 +26,8 @@ function ControlPanel(): ReactNode {
     clearAnswers()
   }
 
+  const [labels] = useLabels()
+
   return (
     <div style={{ width: '100%' }}>
       {/* Controls */}
@@ -33,14 +35,14 @@ function ControlPanel(): ReactNode {
         <Spacing direction="V" size="M">
           <div>
             <Checkbox
-              label={LABELS.swap}
+              label={labels(CoreLabelNames.swap)}
               checked={swap}
               onChange={(_, e) => setSwap(e.checked == true)}
             />
           </div>
           <div>
             <Button disabled={challengeBank.length == 0} onClick={startChallenge}>
-              {userAnswers.size == 0 ? LABELS.start : LABELS.start_over}
+              {labels(userAnswers.size == 0 ? CoreLabelNames.start : CoreLabelNames.start_over)}
             </Button>
           </div>
         </Spacing>
@@ -60,14 +62,17 @@ function Stats(): ReactNode {
   const numCorrect = Array.from(userAnswers.entries()).reduce((cnt, e) => {
     return cnt + (cmp(challenges[e[0]].answer, e[1]) ? 1 : 0)
   }, 0)
+
+  const [labels] = useLabels()
+
   return (
     <Spacing direction="V" size="S">
-      <h3>{LABELS.stats}</h3>
+      <h3>{labels(CoreLabelNames.stats)}</h3>
       <p>
-        {LABELS.number_answered}: {userAnswers.size} / {challenges.length}
+        {labels(CoreLabelNames.num_answered)}: {userAnswers.size} / {challenges.length}
       </p>
       <p>
-        {LABELS.correct_answers}: {numCorrect} / {userAnswers.size}
+        {labels(CoreLabelNames.num_correct)}: {numCorrect} / {userAnswers.size}
         &nbsp;
         {userAnswers.size > 0 ? `(${Math.round((numCorrect * 100) / userAnswers.size)}%)` : ''}
       </p>

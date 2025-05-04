@@ -15,7 +15,7 @@ export function ShmutorApp(props: {
   useEffect(() => {
     if (!props.challengeBank) return
     setChallengeBank(props.challengeBank)
-  }, [props.challengeBank])
+  }, [props.challengeBank, setChallengeBank])
 
   useEffect(() => {
     if (!props.xlsChallengeDef) return

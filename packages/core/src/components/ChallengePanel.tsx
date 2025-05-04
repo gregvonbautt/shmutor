@@ -1,5 +1,5 @@
 import { Button } from '@fluentui/react-components'
-import { LABELS } from '../common/Labels'
+import { CoreLabelNames, useLabels } from '../common/Labels'
 import { useShmutorStore } from '../common/Store'
 import { ReactNode, useEffect, useState } from 'react'
 import ChallengePage from './ChallengePage'
@@ -27,13 +27,15 @@ function ChallengePanel(): ReactNode {
     }
   }
 
+  const [labels] = useLabels()
+
   const controls = (
     <>
       <Button disabled={page <= 0} onClick={() => setPage(page - 1)}>
-        {LABELS.previous}
+        {labels(CoreLabelNames.previous)}
       </Button>
       <Button disabled={!pageSolved || page >= numPages - 1} onClick={() => setPage(page + 1)}>
-        {LABELS.next}
+        {labels(CoreLabelNames.next)}
       </Button>
       <div>
         ({page + 1} / {numPages})
