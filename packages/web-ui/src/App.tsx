@@ -1,4 +1,4 @@
-import { Button, FluentProvider, labelClassNames, webLightTheme } from '@fluentui/react-components'
+import { Button, FluentProvider, webLightTheme } from '@fluentui/react-components'
 import { CoreLabelNames, CoreLabels, ShmutorApp, Spacing, useLabels } from '@shmutor/core'
 import '@shmutor/core/core.css'
 import { useEffect, useRef, useState } from 'react'
